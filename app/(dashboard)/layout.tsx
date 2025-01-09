@@ -7,9 +7,11 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
+    <div>
       <Header />
-      <main className="px-3 lg:px-14">{children}</main>
-    </>
+      <main className="max-w-screen-2xl mx-auto w-full px-3 pb-10 -mt-24">
+        {children}
+      </main>
+    </div>
   );
 }

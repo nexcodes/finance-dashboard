@@ -1,4 +1,7 @@
+import React from 'react'
 
-export default function Dashboard() {
-  return <div></div>;
+export default function DashboardPage() {
+  return (
+    <div>DashboardPage</div>
+  )
 }

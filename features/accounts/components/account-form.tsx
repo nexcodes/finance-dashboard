@@ -80,7 +80,7 @@ export const AccountForm = ({
             className="w-full"
             variant="outline"
           >
-            <Trash className="size-4 mr-2" />
+            <Trash className="size-4" />
             Delete account
           </Button>
         ) : null}
