@@ -9,7 +9,7 @@ import summary from "./summary";
 import { authMiddleware } from "./middleware";
 import { HTTPException } from "hono/http-exception";
 
-export const runtime = "edge";
+// export const runtime = "edge";
 
 const app = new Hono().basePath("/api");
 

@@ -51,7 +51,7 @@ export const DateFilter = () => {
       to: format(dateRange?.to || defaultTo, "yyyy-MM-dd"),
     };
 
-    const url = qs.stringify(
+    const url = qs.stringifyUrl(
       { url: pathname, query },
       { skipNull: true, skipEmptyString: true }
     );
