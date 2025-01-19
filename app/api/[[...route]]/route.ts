@@ -5,6 +5,7 @@ import { handle } from "hono/vercel";
 import accounts from "./accounts";
 import categories from "./categories";
 import transactions from "./transactions";
+import summary from "./summary";
 import { authMiddleware } from "./middleware";
 import { HTTPException } from "hono/http-exception";
 
@@ -27,6 +28,7 @@ app.onError((err, c) => {
 });
 
 const routes = app
+  .route("/summary", summary)
   .route("/accounts", accounts)
   .route("/categories", categories)
   .route("/transactions", transactions);

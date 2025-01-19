@@ -4,14 +4,18 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DataTable } from "@/components/ui/data-table";
 import { Skeleton } from "@/components/ui/skeleton";
+import { transactions as transactionsSchema } from "@/db/schema";
+import { useSelectAccount } from "@/features/accounts/hooks/use-select-account";
+import { useBulkCreateTransactions } from "@/features/transactions/api/use-bulk-create";
 import { useBulkDeleteTransactions } from "@/features/transactions/api/use-bulk-delete";
 import { useGetTransactions } from "@/features/transactions/api/use-get-transactions";
 import { useNewTransaction } from "@/features/transactions/hooks/use-new-transaction";
 import { Loader2, Plus } from "lucide-react";
-import { columns } from "./columns";
 import { useState } from "react";
-import { UploadButton } from "./upload-button";
+import { columns } from "./columns";
 import ImportCard from "./import-card";
+import { UploadButton } from "./upload-button";
+import { toast } from "sonner";
 
 enum VARIANTS {
   LIST = "LIST",
@@ -25,8 +29,20 @@ const INITIAL_IMPORT_RESULTS = {
 };
 
 export default function TransactionPage() {
+  const [AccountDialog, confirm] = useSelectAccount();
   const [variant, setVariant] = useState<VARIANTS>(VARIANTS.LIST);
   const [importResults, setImportResults] = useState(INITIAL_IMPORT_RESULTS);
+
+  const transaction = useNewTransaction();
+
+  const deleteTransactions = useBulkDeleteTransactions();
+  const createTransactions = useBulkCreateTransactions();
+
+  const TransactionsQuery = useGetTransactions();
+  const transactionsData = TransactionsQuery.data || [];
+
+  const isDisabled =
+    TransactionsQuery.isLoading || deleteTransactions.isPending;
 
   const onUpload = (results: typeof INITIAL_IMPORT_RESULTS) => {
     setImportResults(results);
@@ -38,15 +54,26 @@ export default function TransactionPage() {
     setVariant(VARIANTS.LIST);
   };
 
-  const newCategory = useNewTransaction();
+  const onSubmitImport = async (
+    values: (typeof transactionsSchema.$inferInsert)[]
+  ) => {
+    const accountId = await confirm();
 
-  const deleteTransactions = useBulkDeleteTransactions();
+    if (!accountId) {
+      return toast.error("Please Select an account to continue.");
+    }
 
-  const TransactionsQuery = useGetTransactions();
-  const transactionsData = TransactionsQuery.data || [];
+    const data = values.map((value) => ({
+      ...value,
+      accountId: accountId as string,
+    }));
 
-  const isDisabled =
-    TransactionsQuery.isLoading || deleteTransactions.isPending;
+    createTransactions.mutate(data, {
+      onSuccess: () => {
+        onCancelImport();
+      },
+    });
+  };
 
   if (TransactionsQuery.isLoading) {
     return (
@@ -66,10 +93,11 @@ export default function TransactionPage() {
   if (variant === VARIANTS.IMPORT) {
     return (
       <>
+        <AccountDialog />
         <ImportCard
           data={importResults.data}
           onCancel={onCancelImport}
-          onSubmit={() => {}}
+          onSubmit={onSubmitImport}
         />
       </>
     );
@@ -83,7 +111,7 @@ export default function TransactionPage() {
         </CardTitle>
         <div className="flex items-center gap-2">
           <Button
-            onClick={newCategory.onOpen}
+            onClick={transaction.onOpen}
             size="sm"
             className="w-full lg:w-auto"
           >
