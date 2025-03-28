@@ -13,27 +13,78 @@ const sql = neon(process.env.DATABASE_URL!);
 const db = drizzle(sql);
 
 const SEED_USER_ID = "user_2pVukHtS3vqJwxqqEGbMmCXKkoi";
+// const SEED_USER_ID = "user_2rrHb2Es3UxmNX4Zzy6H0JvftDx";
 
 const SEED_CATEGORIES = [
-  { id: "category_1", name: "Food", userId: SEED_USER_ID, plaidId: null },
-  { id: "category_2", name: "Rent", userId: SEED_USER_ID, plaidId: null },
-  { id: "category_3", name: "Utilities", userId: SEED_USER_ID, plaidId: null },
   {
-    id: "category_4",
+    id: `category_1_${SEED_USER_ID}`,
+    name: "Food",
+    userId: SEED_USER_ID,
+    plaidId: null,
+  },
+  {
+    id: `category_2_${SEED_USER_ID}`,
+    name: "Rent",
+    userId: SEED_USER_ID,
+    plaidId: null,
+  },
+  {
+    id: `category_3_${SEED_USER_ID}`,
+    name: "Utilities",
+    userId: SEED_USER_ID,
+    plaidId: null,
+  },
+  {
+    id: `category_4_${SEED_USER_ID}`,
     name: "Entertainment",
     userId: SEED_USER_ID,
     plaidId: null,
   },
-  { id: "category_5", name: "Travel", userId: SEED_USER_ID, plaidId: null },
-  { id: "category_6", name: "Health", userId: SEED_USER_ID, plaidId: null },
+  {
+    id: `category_5_${SEED_USER_ID}`,
+    name: "Travel",
+    userId: SEED_USER_ID,
+    plaidId: null,
+  },
+  {
+    id: `category_6_${SEED_USER_ID}`,
+    name: "Health",
+    userId: SEED_USER_ID,
+    plaidId: null,
+  },
 ];
 
 const SEED_ACCOUNTS = [
-  { id: "account_1", name: "Checking", userId: SEED_USER_ID, plaidId: null },
-  { id: "account_2", name: "Savings", userId: SEED_USER_ID, plaidId: null },
-  { id: "account_3", name: "Credit Card", userId: SEED_USER_ID, plaidId: null },
-  { id: "account_4", name: "Investment", userId: SEED_USER_ID, plaidId: null },
-  { id: "account_5", name: "Cash", userId: SEED_USER_ID, plaidId: null },
+  {
+    id: `account_1_${SEED_USER_ID}`,
+    name: "Checking",
+    userId: SEED_USER_ID,
+    plaidId: null,
+  },
+  {
+    id: `account_2_${SEED_USER_ID}`,
+    name: "Savings",
+    userId: SEED_USER_ID,
+    plaidId: null,
+  },
+  {
+    id: `account_3_${SEED_USER_ID}`,
+    name: "Credit Card",
+    userId: SEED_USER_ID,
+    plaidId: null,
+  },
+  {
+    id: `account_4_${SEED_USER_ID}`,
+    name: "Investment",
+    userId: SEED_USER_ID,
+    plaidId: null,
+  },
+  {
+    id: `account_5_${SEED_USER_ID}`,
+    name: "Cash",
+    userId: SEED_USER_ID,
+    plaidId: null,
+  },
 ];
 
 const defaultTo = new Date();
@@ -71,7 +122,7 @@ const generateTransactionsForDay = (day: Date) => {
     );
 
     SEED_TRANSACTIONS.push({
-      id: `transaction_${format(day, "yyyy-MM-dd")}_${i}`,
+      id: `transaction_${format(day, "yyyy-MM-dd")}_${i}_${SEED_USER_ID}`,
       accountId: account.id,
       categoryId: category.id,
       date: day,
@@ -92,9 +143,9 @@ generateTransactions();
 (async () => {
   try {
     // reset database
-    await db.delete(transactions).execute();
-    await db.delete(accounts).execute();
-    await db.delete(categories).execute();
+    // await db.delete(transactions).execute();
+    // await db.delete(accounts).execute();
+    // await db.delete(categories).execute();
 
     // seed categories
     await db.insert(categories).values(SEED_CATEGORIES).execute();
